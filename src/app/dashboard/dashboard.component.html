@@ -1,0 +1,100 @@
+<div class="html">
+  <div class="expenseForm">
+    <div class="totalHeader">
+      <h5>Total : ₹ {{ totalExpenditure }}</h5>
+      <h5>Per Person : ₹ {{ perheadExpense }}</h5>
+    </div>
+    <form
+      #expenseForm="ngForm"
+      (submit)="trackExpense(expenseForm.value)"
+      class="form-horizontal"
+      id="expense"
+    >
+      <div style="display: flex" class="form-group">
+        <label style="margin-right: 10px" for="ayas">Ayaskant</label>
+        <input type="number" class="form-control" name="ayas" ngModel />
+      </div>
+
+      <div style="display: flex" class="form-group">
+        <label style="margin-right: 22px" for="shivam">Shivam</label>
+        <input type="number" class="form-control" name="shivam" ngModel />
+      </div>
+
+      <div style="display: flex" class="form-group">
+        <label style="margin-right: 27px" for="ayas">Piyush</label>
+        <input type="number" class="form-control" name="piyush" ngModel />
+      </div>
+
+      <div style="display: flex" class="form-group">
+        <label style="margin-right: 21px" for="ayas">Yogank</label>
+        <input type="number" class="form-control" name="yogank" ngModel />
+      </div>
+
+      <button style="width: 45%" type="submit" class="btn btn-info">
+        Split
+      </button>
+      <button
+        [disabled]="!showCalculation"
+        style="width: 45%; float: right"
+        type="button"
+        (click)="clearEverything(expenseForm)"
+        class="btn btn-danger"
+      >
+        Reset
+      </button>
+    </form>
+  </div>
+  <hr />
+  <div *ngIf="showCalculation">
+    <div class="share">
+      <h5 style="text-align: center; margin-top: -15px">Share Distribution</h5>
+      <div>
+        <h6 style="float: left">Ayaskant :</h6>
+        <h6 style="margin-left: 8px">
+          {{ ayas.amountSpent }} - {{ perheadExpense }} =
+          {{ ShareDistributionList[0] }} {{ ayas.message }}
+        </h6>
+      </div>
+      <div>
+        <h6>Shivam :</h6>
+        <h6 style="margin-left: 20px">
+          {{ shivam.amountSpent }} - {{ perheadExpense }} =
+          {{ ShareDistributionList[1] }} {{ shivam.message }}
+        </h6>
+      </div>
+      <div>
+        <h6>Piyush :</h6>
+        <h6 style="margin-left: 25px">
+          {{ piyush.amountSpent }} - {{ perheadExpense }} =
+          {{ ShareDistributionList[2] }} {{ piyush.message }}
+        </h6>
+      </div>
+      <div>
+        <h6>Yogank :</h6>
+        <h6 style="margin-left: 19px">
+          {{ yogank.amountSpent }} - {{ perheadExpense }} =
+          {{ ShareDistributionList[3] }} {{ yogank.message }}
+        </h6>
+      </div>
+    </div>
+
+    <div>
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Given By</th>
+            <th scope="col">Given To</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let expense of settleExpense">
+          <tr *ngIf="expense.amount !== 0">
+            <td>{{ expense.givenBy }}</td>
+            <td>{{ expense.givenTo }}</td>
+            <td>₹ {{ expense.amount }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

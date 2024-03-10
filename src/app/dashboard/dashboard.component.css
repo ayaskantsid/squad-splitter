@@ -1,0 +1,45 @@
+.html {
+  background-image: url("../../assets/jd-background.jpg");
+  background-size: cover;
+  background-repeat: repeat;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  color: white;
+}
+
+.expenseForm {
+  margin: auto;
+  width: 90%;
+}
+
+.share {
+  margin: auto;
+  width: 90%;
+  padding: 2px;
+}
+
+.share div {
+  display: flex;
+  /* align-items: center;
+  justify-content: center; */
+}
+
+.totalHeader {
+  text-align: center;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+
+.totalHeader h5 {
+  margin-bottom: 2px;
+}
+
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+table {
+  color: white;
+}

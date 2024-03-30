@@ -1,4 +1,4 @@
-<div class="html">
+<div #screenshotTarget class="html">
   <div class="expenseForm">
     <div class="totalHeader">
       <h5>Total : ₹ {{ totalExpenditure }}</h5>
@@ -12,26 +12,29 @@
     >
       <div style="display: flex" class="form-group">
         <label style="margin-right: 10px" for="ayas">Ayaskant</label>
-        <input inputmode="numeric" type="number" class="form-control" name="ayas" ngModel />
+        <input inputmode="numeric" type="number" class="form-control" name="ayas" ngModel (ngModelChange)="isSplit = false"/>
       </div>
 
       <div style="display: flex" class="form-group">
         <label style="margin-right: 22px" for="shivam">Shivam</label>
-        <input inputmode="numeric" type="number" class="form-control" name="shivam" ngModel />
+        <input inputmode="numeric" type="number" class="form-control" name="shivam" ngModel (ngModelChange)="isSplit = false"/>
       </div>
 
       <div style="display: flex" class="form-group">
         <label style="margin-right: 27px" for="ayas">Piyush</label>
-        <input inputmode="numeric" type="number" class="form-control" name="piyush" ngModel />
+        <input inputmode="numeric" type="number" class="form-control" name="piyush" ngModel (ngModelChange)="isSplit = false"/>
       </div>
 
       <div (click)="makeYogankOptional()" style="display: flex" class="form-group">
         <label [class.excluded-label]="!isYogankIncluded" style="margin-right: 21px" for="ayas">Yogank</label>
-        <input inputmode="numeric" [placeholder]="isYogankIncluded ? '' : 'Tap name to include'" [disabled]="!isYogankIncluded" type="number" class="form-control" name="yogank" ngModel />
+        <input inputmode="numeric" [placeholder]="isYogankIncluded ? '' : 'Tap name to include'" [disabled]="!isYogankIncluded" type="number" class="form-control" name="yogank" ngModel (ngModelChange)="isSplit = false"/>
       </div>
 
-      <button style="width: 45%" type="submit" class="btn btn-info">
+      <button *ngIf="!isSplit" style="width: 45%" type="submit" class="btn btn-info">
         Split
+      </button>
+      <button (click)="shareScreenshot()" *ngIf="isSplit" style="width: 45%" class="btn btn-success">
+        Share
       </button>
       <button
         [disabled]="!showCalculation"

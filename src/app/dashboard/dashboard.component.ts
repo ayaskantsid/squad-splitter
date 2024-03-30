@@ -1,15 +1,19 @@
 import { IPerson } from './../models/IPerson';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { IPayment } from '../models/IPayment';
-import {Title} from "@angular/platform-browser";
+import { Title } from '@angular/platform-browser';
+import html2canvas from 'html2canvas';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-
 export class DashboardComponent {
+  @ViewChild('screenshotTarget', { static: false })
+  screenshotTarget!: ElementRef;
+
   showCalculation: boolean = false;
   givenByList: IPerson[] = [];
   givenToList: IPerson[] = [];
@@ -26,9 +30,10 @@ export class DashboardComponent {
   perheadExpense: number = 0;
   isYogankIncluded: boolean = false; // Flag to include/exclude Yogank's contribution
   isExclusionPossible: boolean = true; //Flag to exclude yogank only after adding new values
+  isSplit: boolean = false; //Flag to ensure share is only visible after split
 
-  constructor(private titleService: Title) {
-    titleService.setTitle('Squad\'s Bill Splitter');
+  constructor(private titleService: Title, private datePipe: DatePipe) {
+    titleService.setTitle("Squad's Bill Splitter");
   }
 
   clearEverything(form?: any) {
@@ -40,16 +45,20 @@ export class DashboardComponent {
     this.perheadExpense = 0;
     this.showCalculation = false;
     this.isExclusionPossible = true;
+    this.isSplit = false;
     if (form != null) form.resetForm();
   }
 
   trackExpense(expenditure: any) {
     this.clearEverything();
     this.isExclusionPossible = false;
+    this.isSplit = true;
     this.ayas.amountSpent = expenditure.ayas || 0;
     this.shivam.amountSpent = expenditure.shivam || 0;
     this.piyush.amountSpent = expenditure.piyush || 0;
-    this.yogank.amountSpent = this.isYogankIncluded ? (expenditure.yogank || 0) : 0;
+    this.yogank.amountSpent = this.isYogankIncluded
+      ? expenditure.yogank || 0
+      : 0;
 
     this.calculateTotal();
     this.calculateShare();
@@ -68,16 +77,24 @@ export class DashboardComponent {
   }
 
   calculateTotal() {
-    this.totalExpenditure = this.ayas.amountSpent + this.shivam.amountSpent + this.piyush.amountSpent + this.yogank.amountSpent;
+    this.totalExpenditure =
+      this.ayas.amountSpent +
+      this.shivam.amountSpent +
+      this.piyush.amountSpent +
+      this.yogank.amountSpent;
     this.totalExpenditure = Math.ceil(this.totalExpenditure);
-    this.perheadExpense = Math.ceil(this.totalExpenditure / (this.isYogankIncluded ? 4 : 3));
+    this.perheadExpense = Math.ceil(
+      this.totalExpenditure / (this.isYogankIncluded ? 4 : 3)
+    );
   }
 
   calculateShare() {
     this.ayas.share = this.ayas.amountSpent - this.perheadExpense;
     this.shivam.share = this.shivam.amountSpent - this.perheadExpense;
     this.piyush.share = this.piyush.amountSpent - this.perheadExpense;
-    this.yogank.share = this.yogank.amountSpent - (this.isYogankIncluded ? this.perheadExpense : 0);
+    this.yogank.share =
+      this.yogank.amountSpent -
+      (this.isYogankIncluded ? this.perheadExpense : 0);
   }
 
   setDueMessage(personList: IPerson[]) {
@@ -135,10 +152,98 @@ export class DashboardComponent {
     return payments;
   }
 
-  makeYogankOptional(){
-    if(this.isExclusionPossible){
+  makeYogankOptional() {
+    if (this.isExclusionPossible) {
       this.isYogankIncluded = !this.isYogankIncluded;
     }
+  }
+
+  // async shareScreenshot() {
+  //   try {
+  //     // Take a screenshot
+  //     const screenshot = await this.takeScreenshot();
+
+  //     // Convert screenshot to data URL
+  //     const screenshotDataUrl = await this.convertToDataURL(screenshot);
+  //     console.log(screenshotDataUrl);
+
+  //     // Share the screenshot using Web Share API
+  //     if (navigator.share) {
+  //       navigator
+  //         .share({
+  //           title: '', // You can provide a title if necessary
+  //           url: screenshotDataUrl, // Share the data URL instead of window.location.href
+  //         })
+  //         .then(() => console.log('Successful share'))
+  //         .catch((error) => console.log('Error sharing:', error));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sharing screenshot:', error);
+  //     // Handle the error here, provide user feedback, or fallback mechanism
+  //   }
+  // }
+
+  async shareScreenshot() {
+    let currentDate = this.datePipe.transform(new Date(), 'dd_MM_yy');
+    try {
+      // Take a screenshot of the page
+      const canvas = await html2canvas(document.body);
+
+      // Convert the screenshot to a Blob
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          // Share the Blob using Web Share API
+          if (navigator.share) {
+            await navigator.share({
+              title: `${currentDate}_Split`,
+              files: [new File([blob], `${currentDate}_Split.png`, { type: 'image/png' })],
+            });
+          } else {
+            console.log('Web Share API not supported.');
+          }
+        } else {
+          console.error('Unable to create Blob from screenshot.');
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Error capturing or sharing screenshot:', error);
+    }
+  }
+
+
+  async takeScreenshot(): Promise<Blob> {
+    const targetElement = this.screenshotTarget.nativeElement;
+
+    try {
+      // Use html2canvas to capture the screenshot
+      const canvas = await html2canvas(targetElement, {
+        useCORS: true, // Enable CORS support if necessary
+        logging: false, // Disable logging to console
+      });
+
+      // Convert canvas to Blob
+      return new Promise((resolve, reject) => {
+        canvas.toBlob((blob: Blob | null) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Failed to convert canvas to blob.'));
+          }
+        });
+      });
+    } catch (error) {
+      console.error('Error capturing screenshot:', error);
+      throw error; // Rethrow the error for further handling
+    }
+  }
+
+  async convertToDataURL(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
 }
 
@@ -283,4 +388,3 @@ export class DashboardComponent {
 //     return payments;
 //   }
 // }
-

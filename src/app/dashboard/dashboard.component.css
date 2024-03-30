@@ -43,3 +43,9 @@ input::-webkit-inner-spin-button {
 table {
   color: white;
 }
+
+.excluded-label {
+  text-decoration: line-through;
+  font-style: italic;
+  color: grey;
+}

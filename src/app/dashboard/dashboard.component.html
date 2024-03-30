@@ -12,22 +12,22 @@
     >
       <div style="display: flex" class="form-group">
         <label style="margin-right: 10px" for="ayas">Ayaskant</label>
-        <input type="number" class="form-control" name="ayas" ngModel />
+        <input inputmode="numeric" type="number" class="form-control" name="ayas" ngModel />
       </div>
 
       <div style="display: flex" class="form-group">
         <label style="margin-right: 22px" for="shivam">Shivam</label>
-        <input type="number" class="form-control" name="shivam" ngModel />
+        <input inputmode="numeric" type="number" class="form-control" name="shivam" ngModel />
       </div>
 
       <div style="display: flex" class="form-group">
         <label style="margin-right: 27px" for="ayas">Piyush</label>
-        <input type="number" class="form-control" name="piyush" ngModel />
+        <input inputmode="numeric" type="number" class="form-control" name="piyush" ngModel />
       </div>
 
-      <div style="display: flex" class="form-group">
-        <label style="margin-right: 21px" for="ayas">Yogank</label>
-        <input type="number" class="form-control" name="yogank" ngModel />
+      <div (click)="makeYogankOptional()" style="display: flex" class="form-group">
+        <label [class.excluded-label]="!isYogankIncluded" style="margin-right: 21px" for="ayas">Yogank</label>
+        <input inputmode="numeric" [placeholder]="isYogankIncluded ? '' : 'Tap name to include'" [disabled]="!isYogankIncluded" type="number" class="form-control" name="yogank" ngModel />
       </div>
 
       <button style="width: 45%" type="submit" class="btn btn-info">
@@ -69,7 +69,7 @@
           {{ ShareDistributionList[2] }} {{ piyush.message }}
         </h6>
       </div>
-      <div>
+      <div *ngIf="isYogankIncluded">
         <h6>Yogank :</h6>
         <h6 style="margin-left: 19px">
           {{ yogank.amountSpent }} - {{ perheadExpense }} =

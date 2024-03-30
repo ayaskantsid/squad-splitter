@@ -195,7 +195,7 @@ export class DashboardComponent {
           // Share the Blob using Web Share API
           if (navigator.share) {
             await navigator.share({
-              title: `${currentDate}_Split`,
+              title: undefined,
               files: [new File([blob], `${currentDate}_Split.png`, { type: 'image/png' })],
             });
           } else {

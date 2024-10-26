@@ -21,12 +21,12 @@
       </div>
 
       <div style="display: flex" class="form-group">
-        <label style="margin-right: 27px" for="ayas">Piyush</label>
+        <label style="margin-right: 27px" for="piyush">Piyush</label>
         <input inputmode="numeric" type="number" class="form-control" name="piyush" ngModel (ngModelChange)="isSplit = false"/>
       </div>
 
-      <div (click)="makeYogankOptional()" style="display: flex" class="form-group">
-        <label [class.excluded-label]="!isYogankIncluded" style="margin-right: 21px" for="ayas">Yogank</label>
+      <div style="display: flex" class="form-group">
+        <label (click)="makeYogankOptional()" [class.excluded-label]="!isYogankIncluded" style="margin-right: 21px" for="yogank">Yogank</label>
         <input inputmode="numeric" [placeholder]="isYogankIncluded ? '' : 'Tap name to include'" [disabled]="!isYogankIncluded" type="number" class="form-control" name="yogank" ngModel (ngModelChange)="isSplit = false"/>
       </div>
 

@@ -33,7 +33,7 @@ export class DashboardComponent {
   isSplit: boolean = false; //Flag to ensure share is only visible after split
 
   constructor(private titleService: Title, private datePipe: DatePipe) {
-    titleService.setTitle("Squad's Bill Splitter");
+    titleService.setTitle("Squadify");
   }
 
   clearEverything(form?: any) {
